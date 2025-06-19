@@ -122,7 +122,7 @@ if ($result->num_rows > 0) {
   echo '<div class="card">';
   echo '<p class="cardtitle">'.$row["name"].'</p>';
   echo '<div class="cardimg" style="">';
-  echo '<img src="items/thumb/'.$row["thumb"].'" style="max-width:150px; max-height:150px;"/>
+  echo '<img src="'.$row["thumb"].'" style="max-width:150px; max-height:150px;"/>
   			</div>
   			<p class="cardinfo">Info</p>
   			<p class="toitem">
