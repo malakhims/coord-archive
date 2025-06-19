@@ -72,7 +72,7 @@ error_reporting(E_ALL);
       if ($result->num_rows > 0) {
         // output data of each row
         while($row = $result->fetch_assoc()) {
-          echo '<img class="itemview" src="items/';
+          echo '<img class="itemview" src="';
           echo $row["img"];
           echo '"/>';
           
