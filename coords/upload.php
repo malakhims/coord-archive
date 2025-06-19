@@ -6,31 +6,32 @@
 	// show errors
     ini_set('display_errors', '1');
     ini_set('display_startup_errors', '1');
-    error_reporting(E_ALL);   
+    error_reporting(E_ALL);  
 
-	// checking if files were uploaded and displays note for user
+
+
+
+
+
+
+	// Uploads images; checks for completion; shows success or error messages
     $uploaded_filenames = '';
+	// if file has been selected:
+	// > require an image. require the text boxes be filled out.
+	// allow image > check text boxes > move image > move txt to db > create thumbnail
 	if ($_FILES != null) {
       if ($_FILES['files']['name'] != null) { 
-          // TODO: Process uploaded files.
-          // Easy to do yourself with a little help from Google: 
-		  // https://www.google.com/search?q=php+upload+multiple+files+with+single+file+input
-        
-        
-        
 
-
-          // upload image to folder
+        // upload image to folder 
         
-        	// directory for fullsize img
+        	// select directory for fullsize img
             $target_dir = "items/";
         	$filenoext = explode('.', $_FILES['files']['name']);
             $target_file = $target_dir . basename($_FILES['files']['name']);
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
         
-            // Check if image file is a actual image or fake image
-             
+            // Check if image file is a actual image or fake image             
             if(isset($_POST["submit"])) {
               $check = getimagesize($_FILES['files']['name']);
               if($check !== false) {
@@ -40,8 +41,7 @@
                 echo "File is not an image.";
                 $uploadOk = 0;
               }
-            }
-            
+            }           
         
         	// Check if file already exists
             if (file_exists($target_file)) {
@@ -66,18 +66,13 @@
             if ($uploadOk != 1) {
               echo "Sorry, your file was not uploaded due to a file error.";
             // if everything is ok, try to upload file
-            } else {
+            } else {             
               
-              
-          // create thumb and save
-          // add text to database
-              
-              
-            // actual moving of file
-              if (move_uploaded_file($_FILES['files']['tmp_name'], $target_file) != false) {
+         	// IF selected image is ready to be uploaded:             
+            // actual upload of file
+              if (move_uploaded_file($_FILES['files']['tmp_name'], $target_file) != false) {               
                 
-                
-                //thumb after upload
+                // create thumb after successful upload
                            
                 /**
                 * Resize an image and keep the proportions
@@ -133,56 +128,100 @@
                     return $image_p;
                 }
                 
-                // saving thumb as JPEG in the thumb folder
+                // uploading thumb as JPEG in the thumb folder
                 $thumb = resizeImage($target_file, 150, 150);
                 $thumb = imagescale($thumb, 150);
                 $thumbdir = 'items/thumb/';
                 $target_thumb = $thumbdir . $filenoext[0] . '.jpg';
-                imagejpeg($thumb, $target_thumb);
+                imagejpeg($thumb, $target_thumb);  
                 
-                // test what output looks like, remove later
-                // echo '<img src="'.$target_thumb.'">';
                 
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                // define variables for form and set to empty values
+                // isset check for each variable to prevent error
+                $file = $title = $notes = $tags = "";
 
-                // success message
-                $uploaded_filenames = 'Successfully uploaded; view your new post here [link].<br/><br/>';
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                  /* removing bc image is handled below; remove if everything works ok
+                  if (isset($_POST["files"])) {
+                    $file = test_input($_POST["files[]"]);
+                  }
+                  */
+                  if (isset($_POST["posttitle"])) {
+                    $title = test_input($_POST["posttitle"]);
+                  }
+                  if (isset($_POST["postnotes"])) {
+                    $notes = test_input($_POST["postnotes"]);
+                  } else {
+                    $notes = '';
+                  }
+                  if (isset($_POST["posttags"])) {
+                    $tags = test_input($_POST["posttags"]);
+                  } else {
+                    $tags = '';
+                  }
+                }
+
+                // function to clean submitted data IF data is defined
+                function test_input($data) {
+                  if ($data != null) {
+                    $data = trim($data);
+                    $data = stripslashes($data);
+                    $data = htmlspecialchars($data);
+                    // remove this line below if run into issues w data upload
+                    $data = mysqli_real_escape_string($data);
+                    return $data;
+                  }
+                }
+                
+                
+                
+                
+                
+                // SQL for adding form info to database. Only the title and image are required at first upload.
+                // ability to edit description, tags, etc. will come later, in an edit function; right now
+                // focus on getting the new post to show up in the browse page, with the title and thumbnail.
+
+                
+                
+                
+                
+                if (isset($title)) {
+                  
+                  $sql = $link->prepare('INSERT INTO `post` (`name`, `img`, `thumb`, `description`)
+                  VALUES (?, ?, ?, ?)');
+                  $sql->bind_param("ssss", $title, $target_file, $target_thumb, $notes);
+                  $sql->execute();
+                  
+                  
+                }
+
+                // success or error message
+             
+                if ($sql->execute() === TRUE) {
+                	$uploaded_filenames = 'Successfully uploaded; view your new post here [link].<br/><br/>';
+                } else {
+                	echo "Error adding information to database";
+                }
+                
+                
+                
               } else {
-                echo "Sorry, there was an error moving your file.";
+                echo "Sorry, there was an error saving your file.";
               }
             }
        
       } else {
       }
  	}
-
-	// define variables for form and set to empty values
-	// isset check for each variable to prevent error
-    $file = $tile = $notes = $tags = "";
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-      if (isset($_POST["files[]"])) {
-      	$file = test_input($_POST["files[]"]);
-      }
-      if (isset($_POST["posttitle"])) {
-      	$title = test_input($_POST["posttitle"]);
-      }
-      if (isset($_POST["postnotes"])) {
-      	$notes = test_input($_POST["postnotes"]);
-      }
-      if (isset($_POST["posttags"])) {
-      	$tags = test_input($_POST["posttags"]);
-      }
-    }
-
-	// function to clean submitted data IF data is defined
-    function test_input($data) {
-      if ($data != null) {
-      	$data = trim($data);
-        $data = stripslashes($data);
-        $data = htmlspecialchars($data);
-        return $data;
-      }
-    }
 
 ?>
 
@@ -214,9 +253,8 @@
     
 </head>
 
-<body>
-    
-    
+<body>   
+  
       <?php echo $uploaded_filenames; ?>
       <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>" enctype="multipart/form-data">
       <div id="uploadMain" style="display:flex; flex-direction:row; margin:auto; text-align:center; justify-content:space-around; width:90%; flex-wrap:wrap">
@@ -240,8 +278,7 @@
               </div>
               <input type="submit">
           </div>
-        </div>
-        
+        </div>       
         
         <div id="uploadRight" style="width:66%; min-width:500px">
           <p>
@@ -254,26 +291,18 @@
           </p>
           <input type="text" id="postnotes">
 
-
           <p>
             Tags (drop down? comma separated?)
           </p>
           <input type="text" id="posttags">
 
-        </div>
-        
+        </div>        
         
       </div>  
       </form>
                 
-         
-
-
-        
-    
-    
-    
-    
+<!-- SCRIPT ------------------------------------------------------------------------------------------ -->
+  
     <script>
 
         const box = document.querySelector('.box');
@@ -322,12 +351,6 @@
             }
         }
       
-      			
-        
-        
-        
-
-
     </script>
     
 </body>
