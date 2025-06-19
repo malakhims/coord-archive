@@ -5,14 +5,10 @@ require 'config.php';
 <html>
   
 <head>
+<link rel="stylesheet" href="style.css">
 <title>Browse</title>
 
 <style>
-
-	p {
-	font-family:Sylfaen;
-	text-align:center
-}
 
 	.card {
 	width:200px;

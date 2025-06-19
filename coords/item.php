@@ -18,7 +18,7 @@ error_reporting(E_ALL);
 ?>
 <html>
   <head>
-    
+  <link rel="stylesheet" href="style.css">
   <style>
     
     body {
