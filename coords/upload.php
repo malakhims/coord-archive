@@ -35,36 +35,36 @@
             if(isset($_POST["submit"])) {
               $check = getimagesize($_FILES['files']['name']);
               if($check !== false) {
-                echo "File is an image.";
+                // echo "File is an image.";
                 $uploadOk = 1;
               } else {
-                echo "File is not an image.";
+                echo "File is not an image.<br/>";
                 $uploadOk = 0;
               }
             }           
         
         	// Check if file already exists
             if (file_exists($target_file)) {
-              echo "Sorry, file already exists.";
+              echo "Sorry, file already exists.<br/>";
               $uploadOk = 0;
              }
         
         	// Check file size; current max 500KB (500 x 1000 = 500000)
             if ($_FILES['files']["size"] > 500000) {
-              echo "Sorry, your file is too large.";
+              echo "Sorry, your file is too large. Current size limit is 500KB.";
               $uploadOk = 0;
             }
         
         	// Allow certain file formats: only jpg, png, gif
             if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
             && $imageFileType != "gif" ) {
-              echo "Sorry, only JPG, JPEG, PNG, & GIF files are allowed.";
+              echo "Sorry, only JPG, JPEG, PNG, & GIF files are allowed.<br/>";
               $uploadOk = 0;
             }
         
         	// Check if $uploadOk is set to 0 by an error
             if ($uploadOk != 1) {
-              echo "Sorry, your file was not uploaded due to a file error.";
+              echo "Sorry, your file was not uploaded due to an error with the file.<br/>";
             // if everything is ok, try to upload file
             } else {             
               
@@ -130,21 +130,11 @@
                 
                 // uploading thumb as JPEG in the thumb folder
                 $thumb = resizeImage($target_file, 150, 150);
-                $thumb = imagescale($thumb, 150);
+                $thumb = imagescale($thumb, 150, -1);
                 $thumbdir = 'items/thumb/';
                 $target_thumb = $thumbdir . $filenoext[0] . '.jpg';
                 imagejpeg($thumb, $target_thumb);  
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+            
                 // define variables for form and set to empty values
                 // isset check for each variable to prevent error
                 $file = $title = $notes = $tags = "";
@@ -157,6 +147,8 @@
                   */
                   if (isset($_POST["posttitle"])) {
                     $title = test_input($_POST["posttitle"]);
+                  } else {
+                    $title = '';
                   }
                   if (isset($_POST["postnotes"])) {
                     $notes = test_input($_POST["postnotes"]);
@@ -181,19 +173,11 @@
                     return $data;
                   }
                 }
-                
-                
-                
-                
-                
+                     
                 // SQL for adding form info to database. Only the title and image are required at first upload.
                 // ability to edit description, tags, etc. will come later, in an edit function; right now
                 // focus on getting the new post to show up in the browse page, with the title and thumbnail.
-
-                
-                
-                
-                
+               
                 if (isset($title)) {
                   
                   $sql = $link->prepare('INSERT INTO `post` (`name`, `img`, `thumb`, `description`)
@@ -203,23 +187,30 @@
                   
                   
                 }
-
-                // success or error message
+                
+                
+                
+                // final success or error message
              
-                if ($sql->execute() === TRUE) {
+                if ($title != '' && $sql->execute() === TRUE) {
                 	$uploaded_filenames = 'Successfully uploaded; view your new post here [link].<br/><br/>';
                 } else {
-                	echo "Error adding information to database";
+                	echo "Error adding information to database. Make sure you are uploading an image along with a title for your post.<br/>";
                 }
+                
+
+                
                 
                 
                 
               } else {
-                echo "Sorry, there was an error saving your file.";
+                // Error saving file
+                echo "Sorry, there was an error saving your file.<br/>";
               }
             }
        
       } else {
+        echo "No file selected.";
       }
  	}
 
