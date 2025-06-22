@@ -25,11 +25,15 @@
         // upload image to folder 
         
         	// select directory for fullsize img
+        	$timestamp = time();
             $target_dir = "items/";
         	$filenoext = explode('.', $_FILES['files']['name']);
             $target_file = $target_dir . basename($_FILES['files']['name']);
+        	// echo $target_file . '<br/>';
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        	$target_file = $target_dir . $timestamp . '.' . $imageFileType;
+        	// echo $target_file . '<br/>';
         
             // Check if image file is a actual image or fake image             
             if(isset($_POST["submit"])) {
@@ -132,7 +136,7 @@
                 $thumb = resizeImage($target_file, 150, 150);
                 $thumb = imagescale($thumb, 150, -1);
                 $thumbdir = 'items/thumb/';
-                $target_thumb = $thumbdir . $filenoext[0] . '.jpg';
+                $target_thumb = $thumbdir . $timestamp . '_150.jpg';
                 imagejpeg($thumb, $target_thumb);  
             
                 // define variables for form and set to empty values
@@ -140,28 +144,7 @@
                 $file = $title = $notes = $tags = "";
 
                 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                  /* removing bc image is handled below; remove if everything works ok
-                  if (isset($_POST["files"])) {
-                    $file = test_input($_POST["files[]"]);
-                  }
-                  */
-                  if (isset($_POST["posttitle"])) {
-                    $title = test_input($_POST["posttitle"]);
-                  } else {
-                    $title = '';
-                  }
-                  if (isset($_POST["postnotes"])) {
-                    $notes = test_input($_POST["postnotes"]);
-                  } else {
-                    $notes = '';
-                  }
-                  if (isset($_POST["posttags"])) {
-                    $tags = test_input($_POST["posttags"]);
-                  } else {
-                    $tags = '';
-                  }
-                }
-
+                  
                 // function to clean submitted data IF data is defined
                 function test_input($data) {
                   if ($data != null) {
@@ -169,34 +152,55 @@
                     $data = stripslashes($data);
                     $data = htmlspecialchars($data);
                     // remove this line below if run into issues w data upload
-                    $data = mysqli_real_escape_string($data);
+                    // $data = mysqli_real_escape_string($data);
                     return $data;
                   }
                 }
-                     
-                // SQL for adding form info to database. Only the title and image are required at first upload.
-                // ability to edit description, tags, etc. will come later, in an edit function; right now
-                // focus on getting the new post to show up in the browse page, with the title and thumbnail.
-               
-                if (isset($title)) {
                   
+                  /* removing bc image is handled below; remove if everything works ok
+                  if (isset($_POST["files"])) {
+                    $file = test_input($_POST["files[]"]);
+                  }
+                  */
+                  if (isset($_POST["posttitle"])) {
+                    $title = test_input($_POST["posttitle"]);
+                  }
+                  if (isset($_POST["postnotes"])) {
+                    $notes = test_input($_POST["postnotes"]);
+                  }
+                  if (isset($_POST["posttags"])) {
+                    $tags = test_input($_POST["posttags"]);
+                  }
+                         
+              }
+                     
+            // SQL for adding form info to database. Only the title and image are required at first upload.
+            // ability to edit description, tags, etc. will come later, in an edit function; right now
+            // focus on getting the new post to show up in the browse page, with the title and thumbnail.
+               
+                // echo 'title is [' . $title . ']';
+
+                if ($title != '') {
+
                   $sql = $link->prepare('INSERT INTO `post` (`name`, `img`, `thumb`, `description`)
                   VALUES (?, ?, ?, ?)');
                   $sql->bind_param("ssss", $title, $target_file, $target_thumb, $notes);
+
                   $sql->execute();
-                  
-                  
-                }
-                
-                
-                
-                // final success or error message
-             
-                if ($title != '' && $sql->execute() === TRUE) {
-                	$uploaded_filenames = 'Successfully uploaded; view your new post here [link].<br/><br/>';
+
+                  // success message    
+                  $uploaded_filenames = 'Successfully uploaded; view your new post here [link].<br/><br/>';
+
+
+
                 } else {
-                	echo "Error adding information to database. Make sure you are uploading an image along with a title for your post.<br/>";
+                  // error message
+                  echo "Make sure your post contains a title.<br/>";
                 }
+                
+                
+                
+                
                 
 
                 
@@ -230,11 +234,11 @@
             border-radius:15px;
         }
       
-      input[type="text"] {
+      input[type=text] {
       height:120px
       }
       
-      input[type="submit"] {
+      input[type=submit] {
       padding:5px;
       border:2px solid black;
       cursor:pointer
@@ -275,17 +279,17 @@
           <p>
             *Title
           </p>
-          <input type="text" id="posttitle">
+          <input type="text" name="posttitle">
 
           <p>
             Notes
           </p>
-          <input type="text" id="postnotes">
+          <input type="text" name="postnotes">
 
           <p>
             Tags (drop down? comma separated?)
           </p>
-          <input type="text" id="posttags">
+          <input type="text" name="posttags">
 
         </div>        
         
