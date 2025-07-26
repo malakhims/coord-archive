@@ -24,7 +24,7 @@ session_start();
     }
 
     // ALWAYS show
-    echo ' | <a href="info.php">About</a> | <a href="browse.php">Browse</a> | <a href="faq.php">FAQ</a>';
+    echo ' | <a href="info.php">About</a> | <a href="browse.php">Browse</a>';
 	
     ?>
 
