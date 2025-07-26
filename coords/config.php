@@ -2,8 +2,8 @@
 /* Database credentials. 
 May need to be changed when moving to new host!*/
 define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'koinuko');
-define('DB_PASSWORD', 'O3OQxUBltUv5eVum2Mrs');
+define('DB_USERNAME', 'XXX');
+define('DB_PASSWORD', 'XXX');
 define('DB_NAME', 'closet');
  
 /* Attempt to connect to MySQL database */
