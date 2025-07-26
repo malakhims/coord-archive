@@ -5,6 +5,7 @@ require 'config.php';
 <html>
   
 <head>
+<meta charset="ISO-8859-1"> 
 <link rel="stylesheet" href="style.css">
 <title>Browse</title>
 
@@ -50,12 +51,32 @@ require 'config.php';
 </head>
 
 <body>
-  <div id="header" style="width:auto; border-bottom:1px solid black; margin:10px">
-  	<p>header stuff</p>
-  </div> 
+<?php include "header.php" ?>
   
   <div id="main" style="margin:auto; max-width:80%; display:flex; flex-direction:row; flex-wrap:wrap; gap:10px%; justify-content:space-around">
   	<div id="left" style="width:25%; min-width:200px; background-color:#0000FF50; height:500px">
+
+	<p>
+	Search info will go here
+	</p>
+
+	<p style="text-align:left">
+	 <details>
+ 	 	<summary>Sort by date...</summary>
+ 	 	<p>
+		<a href="?date=new">Latest first</a><br/>
+		<a href="?date=old">Earliest first</a><br/>
+		</p>
+	</details> 
+	- Search by date (most recent or oldest)<br/>
+	- Search by item (?)<br/>
+	- Search by color<br/>
+	- Search by brand<br/>
+	- Search by tag<br/>
+	- User search? Probably not needed bc you will be able to click on ppl's user profile
+	</p>
+
+
   	</div>
   	
   	

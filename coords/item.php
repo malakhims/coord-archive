@@ -57,9 +57,7 @@ error_reporting(E_ALL);
   
   
   <body>
-  <div id="header" style="width:auto; border-bottom:1px solid black; margin:10px">
-  	<p></p>
-  </div>
+  <?php include "header.php" ?>
   
   
   <div id="main" style="margin:auto; max-width:80%; display:flex; flex-direction:row; flex-wrap:wrap; gap:10px%; justify-content:space-around">
@@ -85,7 +83,6 @@ error_reporting(E_ALL);
           echo '<p class="subtext">Submitted by '.$row["owner"].'</p>';
           
           echo '<p>Brand name: '.$row["brandname"].'</p>';
-          echo '<p>Release year: '.$row["year"].'</p>';
           echo '<p>Colors: ';
             
           echo $row["color"];
@@ -113,8 +110,37 @@ error_reporting(E_ALL);
           
           
           echo '</p><h3>Offsite Link</h3>';
-          echo '<p><a href="'.$row["link"].'">Click here</a></p>';
+
+	  // If no offsite link, show 'None' or just keep blank
+
+	  if (is_null($row["link"])) {
+		echo "None.";
+	  } else {
+       		echo '<p><a href="'.$row["link"].'">Click here</a></p>';
+	  }
           
+
+	// add a delete button ONLY IF the current logged in username = username of person who uploaded post
+
+	echo "<p style='text-align:right'>";
+   	 if(isset($_SESSION["loggedin"]) ?? 'false' || $_SESSION["loggedin"] == true){
+		if (($_SESSION["username"]) == $row["owner"]) {
+   		 echo "delete me!<br/>";
+		 echo '<button>Delete post</button.';
+
+		// delete function needs to remove post from database,
+		// all info from related tables (tags, etc),
+		// and also remove both image and thumbnail from storage.
+		// Also include an 'are you sure?' message.
+
+
+		}
+   	 } else {
+		echo "not yours! (replace with empty when finished)";
+	 }
+
+	echo "</p>";
+
         }
       }
       ?>

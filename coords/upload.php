@@ -1,5 +1,6 @@
 <?php
-	
+
+
 	// config
 	require 'config.php';
     
@@ -234,11 +235,11 @@
             border-radius:15px;
         }
       
-      input[type=text] {
+      input[type="text"] {
       height:120px
       }
       
-      input[type=submit] {
+      input[type="submit"] {
       padding:5px;
       border:2px solid black;
       cursor:pointer
@@ -248,7 +249,19 @@
     
 </head>
 
-<body>   
+<body>
+<?php include "header.php";
+
+    // Check if the user is logged in, if not then redirect him to login page
+    if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+        header("location: login.php");
+        exit;
+
+    }
+
+
+ ?>
+   
   
       <?php echo $uploaded_filenames; ?>
       <form method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>" enctype="multipart/form-data">

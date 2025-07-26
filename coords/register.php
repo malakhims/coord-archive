@@ -1,4 +1,7 @@
 <?php
+
+// https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php
+
 // Include config file
 require_once "config.php";
  
@@ -107,6 +110,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     </style>
 </head>
 <body>
+<?php include "header.php" ?>
     <div class="wrapper">
         <h2>Sign Up</h2>
         <p>Please fill this form to create an account.</p>
