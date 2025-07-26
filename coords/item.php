@@ -70,6 +70,7 @@ error_reporting(E_ALL);
       if ($result->num_rows > 0) {
         // output data of each row
         while($row = $result->fetch_assoc()) {
+
           echo '<img class="itemview" src="';
           echo $row["img"];
           echo '"/>';
@@ -79,19 +80,20 @@ error_reporting(E_ALL);
           echo '</div>
           <div id="right" style="width:70%; min-width:500px; background-color:#00FF0050; height:500px;">
           
-          <p>'.$row["name"].'</p>';
-          echo '<p class="subtext">Submitted by '.$row["owner"].'</p>';
+          <p><h3>'.$row["name"].'</h3></p>';
+          echo '<p>Submitted by <a href="user.php?name='.$row["owner"].'">'.$row["owner"].'</a> on '.$row["posted"].'</p>';
+                    
+          echo '<h3>Description</h3>';
+          echo '<p>'.$row["description"].'</p>';
           
-          echo '<p>Brand name: '.$row["brandname"].'</p>';
-          echo '<p>Colors: ';
+	  echo '<p><h3>Brand Names:</h3>'.$row["brandname"].'</p>';
+          echo '<p><h3>Colors:</h3> ';
             
           echo $row["color"];
             
           echo '</p>';
-          
-          echo '<h3>Description</h3>';
-          echo '<p>'.$row["description"].'</p>';
-          
+
+
           echo '<h3>Tags</h3><p>';
           
           // check image for tags; display if found; display 'none' if not
@@ -125,8 +127,9 @@ error_reporting(E_ALL);
 	echo "<p style='text-align:right'>";
    	 if(isset($_SESSION["loggedin"]) ?? 'false' || $_SESSION["loggedin"] == true){
 		if (($_SESSION["username"]) == $row["owner"]) {
+		$myid = $_GET["id"];
    		 echo "delete me!<br/>";
-		 echo '<button>Delete post</button.';
+		 echo '<a href="delete.php?id='.$myid.'"><button>Delete post</button></a>';
 
 		// delete function needs to remove post from database,
 		// all info from related tables (tags, etc),
@@ -136,7 +139,7 @@ error_reporting(E_ALL);
 
 		}
    	 } else {
-		echo "not yours! (replace with empty when finished)";
+		echo "not yours!<br/>(replace with empty spot when finished coding delete function)";
 	 }
 
 	echo "</p>";

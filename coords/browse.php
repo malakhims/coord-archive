@@ -28,7 +28,8 @@ require 'config.php';
 
 	.cardinfo {
 	height:32px;
-	line-height:32px;
+	line-height:16px;
+	font-size:14px;
 	margin:0px
 }
   
@@ -68,11 +69,10 @@ require 'config.php';
 		<a href="?date=old">Earliest first</a><br/>
 		</p>
 	</details> 
-	- Search by date (most recent or oldest)<br/>
-	- Search by item (?)<br/>
 	- Search by color<br/>
 	- Search by brand<br/>
 	- Search by tag<br/>
+	- Search by item (?)<br/>
 	- User search? Probably not needed bc you will be able to click on ppl's user profile
 	</p>
 
@@ -80,7 +80,8 @@ require 'config.php';
   	</div>
   	
   	
-  	<div id="right" style="width:70%; min-width:500px; background-color:#00FF0050; height:500px; display:flex; flex-direction:row; flex-wrap:wrap">
+  	<div id="right" style="width:70%; min-width:500px; background-color:#00FF0050; height:500px; display:flex; flex-direction:row; 
+flex-wrap:wrap; gap:10px">
       
       <?php
       
@@ -133,19 +134,30 @@ require 'config.php';
       
 // BUILD ITEM LIST
       
-      $sql = "SELECT * FROM post ORDER BY id DESC LIMIT $offset, $rowsperpage;";
-		$result = $link->query($sql);
+
+      // CHECK FOR PARAMETERS TO DETERMINE LIST ORDER
+      $date = htmlspecialchars($_GET["date"]);
+
+      if ($date == "old") {
+	$sql = "SELECT * FROM post ORDER BY id ASC LIMIT $offset, $rowsperpage;";
+	} else {
+        $sql = "SELECT * FROM post ORDER BY id DESC LIMIT $offset, $rowsperpage;";
+	}
+
+
+
+      $result = $link->query($sql);
 
 if ($result->num_rows > 0) {
   // output data of each row
   while($row = $result->fetch_assoc()) {
-        
+       
   echo '<div class="card">';
   echo '<p class="cardtitle">'.$row["name"].'</p>';
   echo '<div class="cardimg" style="">';
   echo '<img src="'.$row["thumb"].'" style="max-width:150px; max-height:150px;"/>
   			</div>
-  			<p class="cardinfo">Info</p>
+  			<p class="cardinfo">by <a href="user.php?name='.$row["owner"].'">'.$row["owner"].'</a><br/>'.$row["posted"].'</p>
   			<p class="toitem">
   				<a href="item.php?id='.$row["id"].'">View Item</a>
   			</p>';
